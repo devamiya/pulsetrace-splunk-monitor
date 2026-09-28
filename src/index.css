@@ -90,3 +90,185 @@ code, pre, .font-mono {
 .glow-rose {
   text-shadow: 0 0 12px rgba(244, 63, 94, 0.5);
 }
+
+/* ============================================
+   SCROLL REVEAL ANIMATIONS
+   ============================================ */
+.reveal {
+  opacity: 0;
+  transform: translateY(32px);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal.in-view {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.reveal-left {
+  opacity: 0;
+  transform: translateX(-40px);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal-left.in-view {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.reveal-right {
+  opacity: 0;
+  transform: translateX(40px);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal-right.in-view {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.reveal-scale {
+  opacity: 0;
+  transform: scale(0.92);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal-scale.in-view {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+.reveal-delay-4 { transition-delay: 0.4s; }
+.reveal-delay-5 { transition-delay: 0.5s; }
+
+/* ============================================
+   STAGGERED CHILDREN
+   ============================================ */
+.stagger-children > * {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.stagger-children.in-view > * {
+  opacity: 1;
+  transform: translateY(0);
+}
+.stagger-children > *:nth-child(1) { transition-delay: 0.04s; }
+.stagger-children > *:nth-child(2) { transition-delay: 0.1s; }
+.stagger-children > *:nth-child(3) { transition-delay: 0.16s; }
+.stagger-children > *:nth-child(4) { transition-delay: 0.22s; }
+.stagger-children > *:nth-child(5) { transition-delay: 0.28s; }
+
+/* ============================================
+   TOPOLOGY FLOW ANIMATION
+   ============================================ */
+.topology-line {
+  stroke-dasharray: 6 4;
+  animation: dashFlow 1.5s linear infinite;
+}
+@keyframes dashFlow {
+  to { stroke-dashoffset: -20; }
+}
+
+/* ============================================
+   FLOATING AMBIENT ORBS
+   ============================================ */
+@keyframes floatOrb1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  25% { transform: translate(30px, -25px) scale(1.05); }
+  50% { transform: translate(-15px, -40px) scale(0.95); }
+  75% { transform: translate(-30px, -10px) scale(1.02); }
+}
+@keyframes floatOrb2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(-25px, 30px) scale(1.08); }
+  66% { transform: translate(20px, -20px) scale(0.96); }
+}
+@keyframes floatOrb3 {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(25px, -35px); }
+}
+.orb-float-1 { animation: floatOrb1 14s ease-in-out infinite; }
+.orb-float-2 { animation: floatOrb2 18s ease-in-out infinite; }
+.orb-float-3 { animation: floatOrb3 11s ease-in-out infinite; }
+
+/* ============================================
+   ANIMATED GRADIENT TEXT
+   ============================================ */
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+.animated-gradient-text {
+  background-size: 200% auto;
+  animation: gradientShift 4s ease infinite;
+}
+
+/* ============================================
+   ACCORDION (CSS Grid approach)
+   ============================================ */
+.accordion-body {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.accordion-body.open {
+  grid-template-rows: 1fr;
+}
+.accordion-body > div {
+  overflow: hidden;
+}
+
+/* ============================================
+   SOCIAL PROOF TICKER
+   ============================================ */
+@keyframes tickerScroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.ticker-track {
+  animation: tickerScroll 40s linear infinite;
+}
+.ticker-track:hover {
+  animation-play-state: paused;
+}
+
+/* ============================================
+   NODE ALERT GLOW
+   ============================================ */
+@keyframes nodeAlertGlow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.3); }
+  50% { box-shadow: 0 0 14px 4px rgba(245, 158, 11, 0.12); }
+}
+.node-alert-glow {
+  animation: nodeAlertGlow 2s ease-in-out infinite;
+}
+
+/* ============================================
+   FADE IN UP (tab content transitions)
+   ============================================ */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fadeIn {
+  animation: fadeInUp 0.4s ease-out forwards;
+}
+
+/* ============================================
+   BENTO CARD HOVER
+   ============================================ */
+.bento-card {
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.3s ease,
+              box-shadow 0.3s ease;
+}
+.bento-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 40px -12px rgba(0, 0, 0, 0.5);
+}

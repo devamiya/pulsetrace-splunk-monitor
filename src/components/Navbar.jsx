@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Activity, Database, Plus, Layers, Radio, Terminal, Server, ChevronDown, Clock, Users } from 'lucide-react';
+import { Activity, Database, Plus, Layers, Radio, Terminal, Server, ChevronDown, Clock, Users, Sparkles, UserPlus } from 'lucide-react';
 import { TIME_PRESETS } from '../App';
 
 export default function Navbar({ 
@@ -8,6 +8,7 @@ export default function Navbar({
   isLive, 
   setIsLive, 
   onNewAppClick,
+  onOpenOnboard,
   splunkMode,
   appCount,
   timeRange = 'ALL',
@@ -26,6 +27,7 @@ export default function Navbar({
   ];
 
   const tabs = [
+    { id: 'SHOWCASE', label: 'Product Tour', icon: Sparkles, highlight: true },
     { id: 'OVERVIEW', label: 'Overview', icon: Layers },
     { id: 'APPLICATIONS', label: 'Applications', icon: Server },
     { id: 'MESSAGES', label: 'Telemetry', icon: Radio },
@@ -39,7 +41,8 @@ export default function Navbar({
         {/* Sleek Brand Logo */}
         <div 
           className="flex items-center space-x-3 cursor-pointer group" 
-          onClick={() => setActiveTab('OVERVIEW')}
+          onClick={() => setActiveTab('SHOWCASE')}
+          title="Click to view PulseTrace Product Showcase"
         >
           <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 p-0.5 shadow-md shadow-blue-500/20 group-hover:scale-105 transition-transform">
             <div className="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center">
@@ -66,13 +69,17 @@ export default function Navbar({
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center space-x-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                className={`flex items-center space-x-2 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                   isActive
-                    ? 'bg-blue-600 text-white shadow-sm shadow-blue-500/30'
+                    ? tab.highlight 
+                      ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md shadow-blue-500/30' 
+                      : 'bg-blue-600 text-white shadow-sm shadow-blue-500/30'
+                    : tab.highlight
+                    ? 'text-blue-300 hover:text-white hover:bg-blue-900/30'
                     : 'text-gray-400 hover:text-white hover:bg-gray-800/50'
                 }`}
               >
-                <Icon className="w-3.5 h-3.5" />
+                <Icon className={`w-3.5 h-3.5 ${tab.highlight && !isActive ? 'text-blue-400' : ''}`} />
                 <span>{tab.label}</span>
               </button>
             );
@@ -95,7 +102,7 @@ export default function Navbar({
             </button>
 
             {showTeamDropdown && (
-              <div className="absolute right-0 mt-2 w-56 bg-slate-900 border border-gray-800 rounded-xl shadow-2xl z-50 p-1.5 space-y-1">
+              <div className="absolute right-0 mt-2 w-64 bg-slate-900 border border-gray-800 rounded-xl shadow-2xl z-50 p-1.5 space-y-1">
                 <div className="px-3 py-1.5 text-[10px] font-bold text-gray-400 uppercase tracking-wider border-b border-gray-800">
                   100+ Team Member Workspaces
                 </div>
@@ -116,6 +123,20 @@ export default function Navbar({
                     {selectedTeam === team.id && <span className="text-[10px]">✓</span>}
                   </button>
                 ))}
+                
+                {/* Onboard New Team CTA */}
+                <div className="pt-1 border-t border-gray-800">
+                  <button
+                    onClick={() => {
+                      setShowTeamDropdown(false);
+                      if (onOpenOnboard) onOpenOnboard();
+                    }}
+                    className="w-full text-left px-3 py-2 rounded-lg text-xs font-bold text-blue-400 hover:text-white hover:bg-blue-600/20 flex items-center space-x-2 transition-all cursor-pointer"
+                  >
+                    <UserPlus className="w-3.5 h-3.5 text-blue-400" />
+                    <span>+ Onboard New Team Pod</span>
+                  </button>
+                </div>
               </div>
             )}
           </div>

@@ -12,6 +12,8 @@ import SplunkTerminal from './components/SplunkTerminal';
 import ApplicationDetailModal from './components/ApplicationDetailModal';
 import InitiationDrawer from './components/InitiationDrawer';
 import PlaywrightOverlayModal from './components/PlaywrightOverlayModal';
+import PublicProductShowcase from './components/PublicProductShowcase';
+import TeamOnboardingModal from './components/TeamOnboardingModal';
 
 export const TIME_PRESETS = [
   { id: 'ALL', label: 'All Time', durationMs: null },
@@ -33,6 +35,7 @@ export default function App() {
   const [inspectApp, setInspectApp] = useState(null);
   const [editingApp, setEditingApp] = useState(null);
   const [showNewModal, setShowNewModal] = useState(false);
+  const [showOnboardModal, setShowOnboardModal] = useState(false);
 
   // Playwright Overlay State
   const [playwrightActiveInfo, setPlaywrightActiveInfo] = useState(null);
@@ -278,78 +281,89 @@ export default function App() {
         isLive={isLive}
         setIsLive={setIsLive}
         onNewAppClick={() => setShowNewModal(true)}
+        onOpenOnboard={() => setShowOnboardModal(true)}
         splunkMode={splunkEngine.mode}
         appCount={displayedApplications.length}
         timeRange={timeRange}
         setTimeRange={setTimeRange}
       />
 
-      {/* Main Content Area */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6">
-        
-        {/* Top KPI Metric Cards */}
-        <KPICards
-          applications={displayedApplications}
-          activeFilter={activeTab === 'MESSAGES' ? 'MESSAGES' : tableFilter}
-          onFilterSelect={(filterKey) => {
-            if (filterKey === 'MESSAGES') {
-              setActiveTab('MESSAGES');
-            } else {
-              setTableFilter(filterKey);
-              setActiveTab('APPLICATIONS');
-            }
-          }}
+      {/* Conditional Rendering: Public Showcase Landing Page vs Live Console */}
+      {activeTab === 'SHOWCASE' ? (
+        <PublicProductShowcase
+          onLaunchConsole={() => setActiveTab('OVERVIEW')}
+          onOpenOnboard={() => setShowOnboardModal(true)}
         />
-
-        {/* View Switcher Content */}
-        {activeTab === 'OVERVIEW' && (
-          <>
-            <ApplicationFlowGraph
+      ) : (
+        <>
+          {/* Main Content Area */}
+          <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6">
+            
+            {/* Top KPI Metric Cards */}
+            <KPICards
               applications={displayedApplications}
-              selectedStage={selectedStage}
-              setSelectedStage={setSelectedStage}
+              activeFilter={activeTab === 'MESSAGES' ? 'MESSAGES' : tableFilter}
+              onFilterSelect={(filterKey) => {
+                if (filterKey === 'MESSAGES') {
+                  setActiveTab('MESSAGES');
+                } else {
+                  setTableFilter(filterKey);
+                  setActiveTab('APPLICATIONS');
+                }
+              }}
             />
 
-            <ApplicationTable
-              applications={selectedStage ? displayedApplications.filter(a => a.currentStage === selectedStage) : displayedApplications}
-              onSelectApp={(app) => setInspectApp(app)}
-              onEditApp={(app) => setEditingApp(app)}
-              selectedFilter={tableFilter}
-              setSelectedFilter={setTableFilter}
-            />
-          </>
-        )}
+            {/* View Switcher Content */}
+            {activeTab === 'OVERVIEW' && (
+              <>
+                <ApplicationFlowGraph
+                  applications={displayedApplications}
+                  selectedStage={selectedStage}
+                  setSelectedStage={setSelectedStage}
+                />
 
-        {activeTab === 'APPLICATIONS' && (
-          <ApplicationTable
-            applications={displayedApplications}
-            onSelectApp={(app) => setInspectApp(app)}
-            onEditApp={(app) => setEditingApp(app)}
-            selectedFilter={tableFilter}
-            setSelectedFilter={setTableFilter}
-          />
-        )}
+                <ApplicationTable
+                  applications={selectedStage ? displayedApplications.filter(a => a.currentStage === selectedStage) : displayedApplications}
+                  onSelectApp={(app) => setInspectApp(app)}
+                  onEditApp={(app) => setEditingApp(app)}
+                  selectedFilter={tableFilter}
+                  setSelectedFilter={setTableFilter}
+                />
+              </>
+            )}
 
-        {activeTab === 'MESSAGES' && (
-          <MessageTelemetryView
-            applications={displayedApplications}
-            onRepublishMessage={handleRepublishMessage}
-          />
-        )}
+            {activeTab === 'APPLICATIONS' && (
+              <ApplicationTable
+                applications={displayedApplications}
+                onSelectApp={(app) => setInspectApp(app)}
+                onEditApp={(app) => setEditingApp(app)}
+                selectedFilter={tableFilter}
+                setSelectedFilter={setTableFilter}
+              />
+            )}
 
-        {activeTab === 'SPLUNK_TERMINAL' && (
-          <SplunkTerminal
-            splunkEngine={splunkEngine}
-            applications={displayedApplications}
-          />
-        )}
+            {activeTab === 'MESSAGES' && (
+              <MessageTelemetryView
+                applications={displayedApplications}
+                onRepublishMessage={handleRepublishMessage}
+              />
+            )}
 
-      </main>
+            {activeTab === 'SPLUNK_TERMINAL' && (
+              <SplunkTerminal
+                splunkEngine={splunkEngine}
+                applications={displayedApplications}
+              />
+            )}
 
-      {/* Footer */}
-      <footer className="border-t border-gray-900 bg-slate-950 py-4 px-6 text-center text-xs text-gray-500">
-        PulseTrace Splunk Telemetry Monitor • Distributed Application Lifecycle & Message Queue Flow System
-      </footer>
+          </main>
+
+          {/* Footer */}
+          <footer className="border-t border-gray-900 bg-slate-950 py-4 px-6 text-center text-xs text-gray-500">
+            PulseTrace Splunk Telemetry Monitor • Distributed Application Lifecycle & Message Queue Flow System
+          </footer>
+        </>
+      )}
 
       {/* Modals */}
       {inspectApp && (
@@ -366,6 +380,16 @@ export default function App() {
           onSubmit={handleCreateNewApp}
         />
       )}
+
+      {/* Team Onboarding Modal */}
+      <TeamOnboardingModal
+        isOpen={showOnboardModal}
+        onClose={() => setShowOnboardModal(false)}
+        onComplete={(newTeam) => {
+          setShowOnboardModal(false);
+          setActiveTab('OVERVIEW');
+        }}
+      />
 
       {/* Playwright Test Execution Overlay Modal */}
       {playwrightActiveInfo && (
